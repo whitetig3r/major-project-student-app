@@ -21,6 +21,7 @@ and download both iOS and Android SDK's from the [downloads](https://admin.chirp
 
 5. Open the `./android` directory in Android Studio, and create a directory at `app/libs`.
 Drag and drop the `chirp-connect-vx.x.aar` file to the libs directory.
+Ensure the .aar reference has the same version number as that of the .aar file.
 
 6. Update `local.properties` file with your own `sdk.dir` location.
 
