@@ -60,7 +60,7 @@ export default class App extends Component<{}> {
     )
 
     try {
-      await ChirpConnect.init(key, secret, null);
+      await ChirpConnect.init(key, secret);
       ChirpConnect.start();
       this.setState({ initialised: true })
     } catch(e) {

@@ -38,15 +38,53 @@ RCT_EXPORT_MODULE();
 }
 
 /**
- * init()
+ * initWithLicence(key, secret, licence)
+ *
+ * Initialise the SDK with an application key, secret and licence string.
+ * For Pro/Enterprise users to initialise offline.
+ * Callbacks are also set up here.
+ */
+RCT_EXPORT_METHOD(initWithLicence:(NSString *)key secret:(NSString *)secret licence:(NSString *)licence
+                         resolver:(RCTPromiseResolveBlock)resolve
+                         rejecter:(RCTPromiseRejectBlock)reject)
+{
+  sdk = [[ChirpConnect alloc] initWithAppKey:key
+                                   andSecret:secret];
+  [self setCallbacks];
+  NSError *error = [sdk setLicenceString:licence];
+  if (error) {
+    reject(@"Error", @"Licence Error", error);
+  } else {
+    resolve(@"Initialisation Success");
+  }
+}
+
+/**
+ * init(key, secret)
  *
  * Initialise the SDK with an application key and secret.
  * Callbacks are also set up here.
  */
-RCT_EXPORT_METHOD(init:(NSString *)key secret:(NSString *)secret)
+RCT_EXPORT_METHOD(init:(NSString *)key secret:(NSString *)secret
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
 {
   sdk = [[ChirpConnect alloc] initWithAppKey:key
                                    andSecret:secret];
+  
+  [self setCallbacks];
+  [sdk setAuthenticationStateUpdatedBlock:^(NSError * _Nullable error) {
+    if (error) {
+      reject(@"Error", @"Authentication Error", error);
+    } else {
+      resolve(@"Initialisation Success");
+    }
+  }];
+}
+
+- (void)setCallbacks
+{
+  [sdk setShouldRouteAudioToBluetoothPeripherals:YES];
   
   [sdk setStateUpdatedBlock:^(CHIRP_CONNECT_STATE oldState,
                               CHIRP_CONNECT_STATE newState)
@@ -76,16 +114,10 @@ RCT_EXPORT_METHOD(init:(NSString *)key secret:(NSString *)secret)
      NSArray *payload = [self dataToArray: data];
      [self sendEventWithName:@"onReceived" body:@{@"data": payload}];
    }];
-  
-  [sdk setAuthenticationStateUpdatedBlock:^(NSError * _Nullable error) {
-    if (error) {
-      [self sendEventWithName:@"onError" body:@{@"message": [error localizedDescription]}];
-    }
-  }];
 }
 
 /**
- * setLicence()
+ * setLicence(licence)
  *
  * Configure the SDK with a licence string.
  */
@@ -124,7 +156,7 @@ RCT_EXPORT_METHOD(stop)
 }
 
 /**
- * send()
+ * send(data)
  *
  * Sends a payload of NSData to the speaker.
  */
@@ -142,10 +174,10 @@ RCT_EXPORT_METHOD(send: (NSArray *)data)
  *
  * Sends a random payload to the speaker.
  */
-RCT_EXPORT_METHOD(sendRandom: (NSInteger)length)
+RCT_EXPORT_METHOD(sendRandom)
 {
-  NSInteger payloadLength = length ? length : [sdk maxPayloadLength];
-  NSData *data = [sdk randomPayloadWithLength:payloadLength];
+  NSUInteger length = 1 + arc4random() % (sdk.maxPayloadLength - 1);
+  NSData *data = [sdk randomPayloadWithLength:length];
   NSError *err = [sdk send:data];
   if (err) {
     [self sendEventWithName:@"onError" body:@{@"message": [err localizedDescription]}];

@@ -11,7 +11,6 @@ package com.chirpconnect.rctchirpconnect;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
-import android.support.annotation.Nullable;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.Arguments;
@@ -38,6 +37,8 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
     private static final String TAG = "ChirpConnect";
     private ChirpConnect chirpConnect;
     private ReactContext context;
+    private boolean started = false;
+    private boolean wasStarted = false;
 
     @Override
     public String getName() {
@@ -62,38 +63,54 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
     }
 
     /**
-     * init()
+     * init(key, secret)
      *
      * Initialise the SDK with an application key and secret.
-     * Pro/Enterprise can also pass in a licence for offline mode.
      * Callbacks are also set up here.
      */
     @ReactMethod
-    public void init(String key, String secret, @Nullable String licence, final Promise promise) {
-        if (licence == null) {
-            chirpConnect = new ChirpConnect(this.getCurrentActivity(), key, secret, new ConnectAuthenticationStateListener() {
+    public void init(String key, String secret, final Promise promise) {
+        chirpConnect = new ChirpConnect(this.getCurrentActivity(), key, secret, new ConnectAuthenticationStateListener() {
 
-                @Override
-                public void onAuthenticationSuccess() {
-                    promise.resolve("Initialisation Success");
-                }
-
-                @Override
-                public void onAuthenticationError(ChirpError chirpError) {
-                    promise.reject("Authentication Error", chirpError.getMessage());
-                }
-            });
-        } else {
-            chirpConnect = new ChirpConnect(this.getCurrentActivity(), key, secret);
-            ChirpError setLicenceError = chirpConnect.setLicenceString(licence);
-
-            if (setLicenceError.getCode() > 0) {
-                promise.reject("Licence Error", setLicenceError.getMessage());
-            } else {
+            @Override
+            public void onAuthenticationSuccess() {
                 promise.resolve("Initialisation Success");
             }
-        }
 
+            @Override
+            public void onAuthenticationError(ChirpError chirpError) {
+                promise.reject("Authentication Error", chirpError.getMessage());
+            }
+        });
+        setCallbacks();
+    }
+
+    /**
+     * initWithLicence(key, secret, licence)
+     *
+     * Initialise the SDK with an application key, secret and licence.
+     * Pro/Enterprise users pass in a licence to initialise offline.
+     * Callbacks are also set up here.
+     */
+    @ReactMethod
+    public void initWithLicence(String key, String secret, String licence, Promise promise) {
+        chirpConnect = new ChirpConnect(this.getCurrentActivity(), key, secret);
+        ChirpError setLicenceError = chirpConnect.setLicenceString(licence);
+        setCallbacks();
+
+        if (setLicenceError.getCode() > 0) {
+            promise.reject("Licence Error", setLicenceError.getMessage());
+        } else {
+            promise.resolve("Initialisation Success");
+        }
+    }
+
+    /*
+     * setCallbacks()
+     *
+     * Internal method to setup callbacks.
+     */
+    private void setCallbacks() {
         chirpConnect.setListener(new ConnectEventListener() {
 
             @Override
@@ -133,7 +150,7 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
     }
 
     /**
-     * setLicence()
+     * setLicence(licence)
      *
      * Configure the SDK with a licence string.
      */
@@ -156,6 +173,7 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
         if (error.getCode() > 0) {
             onError(context, error.getMessage());
         }
+        started = true;
     }
 
     /**
@@ -169,10 +187,11 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
         if (error.getCode() > 0) {
             onError(context, error.getMessage());
         }
+        started = false;
     }
 
     /**
-     * send()
+     * send(data)
      *
      * Sends a payload of NSData to the speaker.
      */
@@ -239,16 +258,20 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
 
     @Override
     public void onHostResume() {
-        chirpConnect.start();
+        if (wasStarted) {
+            chirpConnect.start();
+        }
     }
 
     @Override
     public void onHostPause() {
+        wasStarted = started;
         chirpConnect.stop();
     }
 
     @Override
     public void onHostDestroy() {
+        wasStarted = started;
         chirpConnect.stop();
     }
 }
