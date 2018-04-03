@@ -27,7 +27,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import chirpconnect.Chirpconnect;
 import io.chirp.connect.ChirpConnect;
 import io.chirp.connect.interfaces.ConnectEventListener;
-import io.chirp.connect.interfaces.ConnectAuthenticationStateListener;
+import io.chirp.connect.interfaces.ConnectLicenceListener;
 import io.chirp.connect.models.ChirpError;
 import io.chirp.connect.models.ConnectState;
 
@@ -69,48 +69,8 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
      * Callbacks are also set up here.
      */
     @ReactMethod
-    public void init(String key, String secret, final Promise promise) {
-        chirpConnect = new ChirpConnect(this.getCurrentActivity(), key, secret, new ConnectAuthenticationStateListener() {
-
-            @Override
-            public void onAuthenticationSuccess() {
-                promise.resolve("Initialisation Success");
-            }
-
-            @Override
-            public void onAuthenticationError(ChirpError chirpError) {
-                promise.reject("Authentication Error", chirpError.getMessage());
-            }
-        });
-        setCallbacks();
-    }
-
-    /**
-     * initWithLicence(key, secret, licence)
-     *
-     * Initialise the SDK with an application key, secret and licence.
-     * Pro/Enterprise users pass in a licence to initialise offline.
-     * Callbacks are also set up here.
-     */
-    @ReactMethod
-    public void initWithLicence(String key, String secret, String licence, Promise promise) {
+    public void init(String key, String secret) {
         chirpConnect = new ChirpConnect(this.getCurrentActivity(), key, secret);
-        ChirpError setLicenceError = chirpConnect.setLicenceString(licence);
-        setCallbacks();
-
-        if (setLicenceError.getCode() > 0) {
-            promise.reject("Licence Error", setLicenceError.getMessage());
-        } else {
-            promise.resolve("Initialisation Success");
-        }
-    }
-
-    /*
-     * setCallbacks()
-     *
-     * Internal method to setup callbacks.
-     */
-    private void setCallbacks() {
         chirpConnect.setListener(new ConnectEventListener() {
 
             @Override
@@ -150,13 +110,39 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
     }
 
     /**
+     * getLicence()
+     *
+     * Fetch default licence from the network to configure the SDK.
+     */
+    @ReactMethod
+    public void getLicence(final Promise promise) {
+        chirpConnect.getLicence(new ConnectLicenceListener() {
+
+            @Override
+            public void onSuccess(String networkLicence) {
+                ChirpError setLicenceError = chirpConnect.setLicence(networkLicence);
+                if (setLicenceError.getCode() > 0) {
+                    promise.reject("Licence Error", setLicenceError.getMessage());
+                } else {
+                    promise.resolve("Initialisation Success");
+                }
+            }
+
+            @Override
+            public void onError(ChirpError chirpError) {
+                promise.reject("Network Error", chirpError.getMessage());
+            }
+        });
+    }
+
+    /**
      * setLicence(licence)
      *
      * Configure the SDK with a licence string.
      */
     @ReactMethod
     public void setLicence(String licence) {
-        ChirpError setLicenceError = chirpConnect.setLicenceString(licence);
+        ChirpError setLicenceError = chirpConnect.setLicence(licence);
         if (setLicenceError.getCode() > 0) {
             onError(context, setLicenceError.getMessage());
         }
@@ -193,7 +179,7 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
     /**
      * send(data)
      *
-     * Sends a payload of NSData to the speaker.
+     * Encodes a payload of bytes, and sends to the speaker.
      */
     @ReactMethod
     public void send(ReadableArray data) {
@@ -231,7 +217,20 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
         }
     }
 
-    public static WritableMap assembleData(byte[] data) {
+    /**
+     * asString(data)
+     *
+     * Returns a payload represented as a hexadecimal string.
+     */
+    public static String asString(byte[] in) {
+        final StringBuilder builder = new StringBuilder();
+        for(byte b : in) {
+            builder.append(String.format("%02x", b));
+        }
+        return builder.toString();
+    }
+
+    private static WritableMap assembleData(byte[] data) {
         WritableArray payload = Arguments.createArray();
         for (int i = 0; i < data.length; i++) {
             payload.pushInt(data[i]);
@@ -239,14 +238,6 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
         WritableMap params = Arguments.createMap();
         params.putArray("data", payload);
         return params;
-    }
-
-    public static String asString(byte[] in) {
-        final StringBuilder builder = new StringBuilder();
-        for(byte b : in) {
-            builder.append(String.format("%02x", b));
-        }
-        return builder.toString();
     }
 
     private void onError(ReactContext reactContext,

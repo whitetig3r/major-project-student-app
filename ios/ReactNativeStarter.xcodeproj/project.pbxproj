@@ -35,8 +35,8 @@
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* ReactNativeStarterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ReactNativeStarterTests.m */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		775698E8206CE9B100333086 /* ChirpConnect.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 775698C2206CE9B100333086 /* ChirpConnect.framework */; };
 		779C4262204ED3A10004F75E /* RCTChirpConnect.m in Sources */ = {isa = PBXBuildFile; fileRef = 779C4261204ED3A10004F75E /* RCTChirpConnect.m */; };
-		779C42A8204ED96F0004F75E /* ChirpConnect.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 779C429A204ED40C0004F75E /* ChirpConnect.framework */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 /* End PBXBuildFile section */
@@ -341,9 +341,9 @@
 		2D02E4901E0B4A5D006451C7 /* ReactNativeStarter-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ReactNativeStarter-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		775698C2206CE9B100333086 /* ChirpConnect.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ChirpConnect.framework; path = "../../../../../Downloads/ChirpConnect-iOS-3.3.2/ChirpConnect.framework"; sourceTree = "<group>"; };
 		779C4261204ED3A10004F75E /* RCTChirpConnect.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RCTChirpConnect.m; path = ReactNativeStarter/RCTChirpConnect.m; sourceTree = "<group>"; };
 		779C4298204ED3B80004F75E /* RCTChirpConnect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCTChirpConnect.h; path = ReactNativeStarter/RCTChirpConnect.h; sourceTree = "<group>"; };
-		779C429A204ED40C0004F75E /* ChirpConnect.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ChirpConnect.framework; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
@@ -369,7 +369,7 @@
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
-				779C42A8204ED96F0004F75E /* ChirpConnect.framework in Frameworks */,
+				775698E8206CE9B100333086 /* ChirpConnect.framework in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
@@ -542,7 +542,7 @@
 		779C4299204ED3ED0004F75E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				779C429A204ED40C0004F75E /* ChirpConnect.framework */,
+				775698C2206CE9B100333086 /* ChirpConnect.framework */,
 			);
 			path = Frameworks;
 			sourceTree = "<group>";
