@@ -11,6 +11,7 @@ package com.chirpconnect.rctchirpconnect;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
+import java.io.IOException;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.Arguments;
@@ -263,6 +264,8 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
     @Override
     public void onHostDestroy() {
         wasStarted = started;
-        chirpConnect.stop();
+        try {
+            chirpConnect.close();
+        } catch(IOException err) {}
     }
 }
