@@ -55,12 +55,12 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
     @Override
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
-        constants.put("CHIRP_CONNECT_NOT_CREATED", 0);
-        constants.put("CHIRP_CONNECT_STATE_STOPPED", 1);
-        constants.put("CHIRP_CONNECT_STATE_PAUSED", 2);
-        constants.put("CHIRP_CONNECT_STATE_RUNNING", 3);
-        constants.put("CHIRP_CONNECT_STATE_SENDING", 4);
-        constants.put("CHIRP_CONNECT_STATE_RECEIVING", 5);
+        constants.put("CHIRP_CONNECT_NOT_CREATED", ConnectState.ConnectNotCreated);
+        constants.put("CHIRP_CONNECT_STATE_STOPPED", ConnectState.AudioStateStopped);
+        constants.put("CHIRP_CONNECT_STATE_PAUSED", ConnectState.AudioStatePaused);
+        constants.put("CHIRP_CONNECT_STATE_RUNNING", ConnectState.AudioStateRunning);
+        constants.put("CHIRP_CONNECT_STATE_SENDING", ConnectState.AudioStateSending);
+        constants.put("CHIRP_CONNECT_STATE_RECEIVING", ConnectState.AudioStateReceiving);
         return constants;
     }
 
