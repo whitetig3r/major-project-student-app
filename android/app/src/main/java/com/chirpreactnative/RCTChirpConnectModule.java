@@ -66,12 +66,12 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
     @Override
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
-        constants.put("CHIRP_CONNECT_NOT_CREATED", Chirpconnect.SDK_STATE_NOT_CREATED);
-        constants.put("CHIRP_CONNECT_STATE_STOPPED", Chirpconnect.SDK_STATE_STOPPED);
-        constants.put("CHIRP_CONNECT_STATE_PAUSED", Chirpconnect.SDK_STATE_PAUSED);
-        constants.put("CHIRP_CONNECT_STATE_RUNNING", Chirpconnect.SDK_STATE_RUNNING);
-        constants.put("CHIRP_CONNECT_STATE_SENDING", Chirpconnect.SDK_STATE_SENDING);
-        constants.put("CHIRP_CONNECT_STATE_RECEIVING", Chirpconnect.SDK_STATE_RECEIVING);
+        constants.put("CHIRP_CONNECT_NOT_CREATED", ConnectState.ConnectNotCreated.ordinal());
+        constants.put("CHIRP_CONNECT_STATE_STOPPED", ConnectState.AudioStateStopped.ordinal());
+        constants.put("CHIRP_CONNECT_STATE_PAUSED", ConnectState.AudioStatePaused.ordinal());
+        constants.put("CHIRP_CONNECT_STATE_RUNNING", ConnectState.AudioStateRunning.ordinal());
+        constants.put("CHIRP_CONNECT_STATE_SENDING", ConnectState.AudioStateSending.ordinal());
+        constants.put("CHIRP_CONNECT_STATE_RECEIVING", ConnectState.AudioStateReceiving.ordinal());
         return constants;
     }
 
@@ -114,7 +114,7 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
             @Override
             public void onStateChanged(byte oldState, byte newState) {
                 WritableMap params = Arguments.createMap();
-                params.putInt("status", newState);
+                params.putInt("status", ConnectState.createConnectState(newState).ordinal());
                 context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("onStateChanged", params);
             }
 
