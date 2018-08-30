@@ -39,7 +39,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import chirpconnect.Chirpconnect;
 import io.chirp.connect.ChirpConnect;
 import io.chirp.connect.interfaces.ConnectEventListener;
-import io.chirp.connect.interfaces.ConnectLicenceListener;
+import io.chirp.connect.interfaces.ConnectSetConfigListener;
 import io.chirp.connect.models.ChirpError;
 import io.chirp.connect.models.ConnectState;
 
@@ -84,28 +84,29 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
     @ReactMethod
     public void init(String key, String secret) {
         chirpConnect = new ChirpConnect(this.getCurrentActivity(), key, secret);
+
         chirpConnect.setListener(new ConnectEventListener() {
 
             @Override
-            public void onSending(byte[] data) {
+            public void onSending(byte[] data, byte channel) {
                 WritableMap params = assembleData(data);
                 context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("onSending", params);
             }
 
             @Override
-            public void onSent(byte[] data) {
+            public void onSent(byte[] data, byte channel) {
                 WritableMap params = assembleData(data);
                 context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("onSent", params);
             }
 
             @Override
-            public void onReceiving() {
+            public void onReceiving(byte channel) {
                 WritableMap params = Arguments.createMap();
                 context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("onReceiving", params);
             }
 
             @Override
-            public void onReceived(byte[] data) {
+            public void onReceived(byte[] data, byte channel) {
                 WritableMap params = assembleData(data);
                 context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("onReceived", params);
             }
@@ -123,42 +124,46 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
     }
 
     /**
-     * getLicence()
+     * setConfigFromNetwork()
      *
-     * Fetch default licence from the network to configure the SDK.
+     * Fetch default config from the network to configure the SDK.
      */
     @ReactMethod
-    public void getLicence(final Promise promise) {
-        chirpConnect.getLicence(new ConnectLicenceListener() {
+    public void setConfigFromNetwork(final Promise promise) {
+        chirpConnect.setConfigFromNetwork(new ConnectSetConfigListener() {
 
             @Override
-            public void onSuccess(String networkLicence) {
-                ChirpError setLicenceError = chirpConnect.setLicence(networkLicence);
-                if (setLicenceError.getCode() > 0) {
-                    promise.reject("Licence Error", setLicenceError.getMessage());
-                } else {
-                    promise.resolve("Initialisation Success");
-                }
+            public void onSuccess() {
+                promise.resolve("Initialisation Success");
             }
 
             @Override
-            public void onError(ChirpError chirpError) {
-                promise.reject("Network Error", chirpError.getMessage());
+            public void onError(ChirpError setConfigError) {
+                promise.reject("Network Error", setConfigError.getMessage());
             }
         });
     }
 
     /**
-     * setLicence(licence)
+     * setConfig(config)
      *
-     * Configure the SDK with a licence string.
+     * Configure the SDK with a config string.
      */
     @ReactMethod
-    public void setLicence(String licence) {
-        ChirpError setLicenceError = chirpConnect.setLicence(licence);
-        if (setLicenceError.getCode() > 0) {
-            onError(context, setLicenceError.getMessage());
-        }
+    public void setConfig(String config, final Promise promise) {
+
+        chirpConnect.setConfig(config, new ConnectSetConfigListener() {
+
+            @Override
+            public void onSuccess() {
+                promise.resolve("Initialisation Success");
+            }
+
+            @Override
+            public void onError(ChirpError setConfigError) {
+                promise.reject("SetConfig Error", setConfigError.getMessage());
+            }
+        });
     }
 
     /**
@@ -219,10 +224,9 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
      */
     @ReactMethod
     public void sendRandom() {
-        Random r = new Random();
-        long length = (long)r.nextInt((int)chirpConnect.getMaxPayloadLength() - 1);
-        byte[] payload = chirpConnect.randomPayload(length);
-
+        long maxPayloadLength = chirpConnect.getMaxPayloadLength();
+        long size = (long) new Random().nextInt((int) maxPayloadLength) + 1;
+        byte[] payload = chirpConnect.randomPayload(size);
 
         ChirpError error = chirpConnect.send(payload);
         if (error.getCode() > 0) {

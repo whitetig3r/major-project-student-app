@@ -27,6 +27,7 @@ RCT_EXPORT_MODULE();
 - (NSDictionary *)constantsToExport
 {
   return @{
+    @"CHIRP_CONNECT_STATE_NOT_CREATED": [NSNumber numberWithInt:CHIRP_CONNECT_STATE_NOT_CREATED],
     @"CHIRP_CONNECT_STATE_STOPPED": [NSNumber numberWithInt:CHIRP_CONNECT_STATE_STOPPED],
     @"CHIRP_CONNECT_STATE_PAUSED": [NSNumber numberWithInt:CHIRP_CONNECT_STATE_PAUSED],
     @"CHIRP_CONNECT_STATE_RUNNING": [NSNumber numberWithInt:CHIRP_CONNECT_STATE_RUNNING],
@@ -78,18 +79,18 @@ RCT_EXPORT_METHOD(init:(NSString *)key secret:(NSString *)secret)
      [self sendEventWithName:@"onSent" body:@{@"data": payload}];
    }];
 
-  [sdk setReceivingBlock:^(void)
+  [sdk setReceivingBlock:^(NSUInteger channel)
    {
      [self sendEventWithName:@"onReceiving" body:@{}];
    }];
 
-  [sdk setReceivedBlock:^(NSData * _Nonnull data)
+  [sdk setReceivedBlock:^(NSData * _Nonnull data, NSUInteger channel)
    {
      NSArray *payload = [self dataToArray: data];
      [self sendEventWithName:@"onReceived" body:@{@"data": payload}];
    }];
 
-  [sdk setAuthenticationStateUpdatedBlock:^(NSError * _Nullable error) {
+  [sdk setAuthenticatedBlock:^(NSError * _Nullable error) {
     if (error) {
       [self sendEventWithName:@"onError" body:@{@"message": [error localizedDescription]}];
     }
@@ -97,37 +98,37 @@ RCT_EXPORT_METHOD(init:(NSString *)key secret:(NSString *)secret)
 }
 
 /**
- * getLicence()
+ * setConfigFromNetwork()
  *
  * Fetch default licence from network to configure the SDK.
  */
-RCT_EXPORT_METHOD(getLicence:(RCTPromiseResolveBlock)resolve
-                    rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(setConfigFromNetwork:(RCTPromiseResolveBlock)resolve
+                              rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [sdk getLicenceStringWithCompletion:^(NSString * _Nullable licence, NSError * _Nullable error) {
+    [sdk setConfigFromNetworkWithCompletion:^(NSError * _Nullable error) {
       if (error) {
         reject(@"Error", @"Authentication Error", error);
       } else {
-        NSError *licenceErr = [sdk setLicenceString:licence];
-        if (licenceErr) {
-          reject(@"Error", @"Licence Error", licenceErr);
-        } else {
-          resolve(@"Initialisation Success");
-        }
+        resolve(@"Initialisation Success");
       }
     }];
 }
 
 /**
- * setLicence(licence)
+ * setConfig(config)
  *
- * Configure the SDK with a licence string.
+ * Configure the SDK with a config string.
  */
-RCT_EXPORT_METHOD(setLicence:(NSString *)licence)
+RCT_EXPORT_METHOD(setConfig:(NSString *)config
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
 {
-  NSError *err = [sdk setLicenceString:licence];
+  NSError *err = [sdk setConfig:config];
   if (err) {
     [self sendEventWithName:@"onError" body:@{@"message": [err localizedDescription]}];
+    reject(@"Error", @"Configuration Error", err);
+  } else {
+    resolve(@"Configuration set");
   }
 }
 

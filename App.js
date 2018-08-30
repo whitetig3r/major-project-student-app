@@ -17,6 +17,7 @@
 // under the License.
 //
 import React, { Component } from 'react';
+import Permissions from 'react-native-permissions';
 import {
   Button,
   Platform,
@@ -32,8 +33,8 @@ import {
 const ChirpConnect = NativeModules.ChirpConnect;
 const ChirpConnectEmitter = new NativeEventEmitter(ChirpConnect);
 
-const key = 'YOUR_CHIRP_APPLICATION_KEY';
-const secret = 'YOUR_CHIRP_APPLICATION_SECRET';
+const key = 'CHIRP_APPLICATION_KEY';
+const secret = 'CHIRP_APPLICATION_SECRET';
 
 export default class App extends Component<{}> {
 
@@ -47,6 +48,11 @@ export default class App extends Component<{}> {
   }
 
   async componentDidMount() {
+    const response = await Permissions.check('microphone')
+    if (response !== 'authorized') {
+      await Permissions.request('microphone')
+    }
+
     this.onStateChanged = ChirpConnectEmitter.addListener(
       'onStateChanged',
       (event) => {
@@ -79,7 +85,7 @@ export default class App extends Component<{}> {
 
     try {
       ChirpConnect.init(key, secret);
-      await ChirpConnect.getLicence();
+      await ChirpConnect.setConfigFromNetwork();
       ChirpConnect.start();
       this.setState({ initialised: true })
     } catch(e) {
@@ -94,7 +100,7 @@ export default class App extends Component<{}> {
   }
 
   onPress() {
-    ChirpConnect.send([0,1,2,3,4]);
+    ChirpConnect.send([0, 1, 2, 3, 4]);
   }
 
   render() {
