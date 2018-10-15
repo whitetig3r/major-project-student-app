@@ -47,10 +47,9 @@ import io.chirp.connect.models.ConnectState;
 public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
     private static final String TAG = "ChirpConnect";
-    private ChirpConnect chirpConnect;
+    private ChirpConnect chirpConnect = null;
     private ReactContext context;
-    private boolean started = false;
-    private boolean wasStarted = false;
+    private boolean isStarted = false;
 
     @Override
     public String getName() {
@@ -176,8 +175,9 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
         ChirpError error = chirpConnect.start();
         if (error.getCode() > 0) {
             onError(context, error.getMessage());
+        } else {
+            isStarted = true;
         }
-        started = true;
     }
 
     /**
@@ -190,8 +190,9 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
         ChirpError error = chirpConnect.stop();
         if (error.getCode() > 0) {
             onError(context, error.getMessage());
+        } else {
+            isStarted = false;
         }
-        started = false;
     }
 
     /**
@@ -266,22 +267,22 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
 
     @Override
     public void onHostResume() {
-        if (wasStarted) {
+        if (chirpConnect != null && isStarted) {
             chirpConnect.start();
         }
     }
 
     @Override
     public void onHostPause() {
-        wasStarted = started;
-        chirpConnect.stop();
+        if (chirpConnect != null) {
+            chirpConnect.stop();
+        }
     }
 
     @Override
     public void onHostDestroy() {
-        wasStarted = started;
-        try {
+        if (chirpConnect != null) {
             chirpConnect.close();
-        } catch(IOException err) {}
+        }
     }
 }
