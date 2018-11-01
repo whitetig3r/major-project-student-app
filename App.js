@@ -73,7 +73,7 @@ export default class App extends Component<{}> {
     this.onReceived = ChirpConnectEmitter.addListener(
       'onReceived',
       (event) => {
-        if (event.data) {
+        if (event.data.length) {
           this.setState({ data: event.data });
         }
       }
