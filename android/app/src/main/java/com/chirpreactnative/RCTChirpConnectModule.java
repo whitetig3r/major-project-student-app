@@ -250,8 +250,10 @@ public class RCTChirpConnectModule extends ReactContextBaseJavaModule implements
 
     private static WritableMap assembleData(byte[] data) {
         WritableArray payload = Arguments.createArray();
-        for (int i = 0; i < data.length; i++) {
-            payload.pushInt(data[i]);
+        if (data != null) {
+            for (int i = 0; i < data.length; i++) {
+                payload.pushInt(data[i]);
+            }
         }
         WritableMap params = Arguments.createMap();
         params.putArray("data", payload);
