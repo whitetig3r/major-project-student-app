@@ -59,6 +59,7 @@ export default class App extends Component<{}> {
         if (event.data.length) {
           console.log(event.data);
           this.setState({ data: event.data });
+          this.props.navigation.navigate('Second', {pin:event.data});
           setTimeout((() => { this.setState({ data: '----------' }) }), 5000);
         }
       }
@@ -111,31 +112,33 @@ export default class App extends Component<{}> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#000"
   },
   welcome: {
     fontSize: 20,
-    fontFamily: "monospace",
-    color: 'white',
-    textAlign: 'center',
-    margin: 30,
+    fontFamily: Platform.OS === "android" ? "monospace" : "American Typewriter",
+    color: "white",
+    textAlign: "center",
+    margin: 30
   },
   instructions: {
     padding: 10,
-    textAlign: 'center',
-    color: 'white',
-    marginBottom: 5,
+    textAlign: "center",
+    color: "white",
+    marginBottom: 5
   },
   button: {
     padding: 10,
-    textAlign: 'center',
-    backgroundColor: 'green'
+    textAlign: "center",
+    backgroundColor: "green"
   },
   buttonText: {
     letterSpacing: 2,
-    color: 'white',
-    fontFamily: 'monospace'
+    color: "white",
+    fontFamily: Platform.OS === "android" ? "monospace" : "American Typewriter"
   }
 });
+
+

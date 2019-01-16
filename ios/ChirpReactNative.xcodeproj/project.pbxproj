@@ -25,6 +25,7 @@
 		779F7027213809E300782B83 /* RCTChirpConnect.m in Sources */ = {isa = PBXBuildFile; fileRef = 779F7026213809E300782B83 /* RCTChirpConnect.m */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
+		D84BB8F04F684E88B52B3BFA /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 827477CC9E6F4F239FB654C6 /* libRNGestureHandler.a */; };
 		E5C0E0CBE4F4440EBDA04421 /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D0B2257F9684C5D9E836F85 /* libReactNativePermissions.a */; };
 /* End PBXBuildFile section */
 
@@ -253,6 +254,13 @@
 			remoteGlobalIDString = 3D3CD9181DE5FBD800167DC4;
 			remoteInfo = "jschelpers-tvOS";
 		};
+		4739853221EF34D400442B9A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EAE91CDC921F4175967CDEFF /* RNGestureHandler.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNGestureHandler;
+		};
 		5E9157321DD0AC6500FF2AA8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */;
@@ -323,8 +331,10 @@
 		779F7026213809E300782B83 /* RCTChirpConnect.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTChirpConnect.m; sourceTree = "<group>"; };
 		779F702821380A3400782B83 /* RCTChirpConnect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTChirpConnect.h; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
+		827477CC9E6F4F239FB654C6 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
+		EAE91CDC921F4175967CDEFF /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNGestureHandler.xcodeproj; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; };
 		F76968552E474916877786CF /* ReactNativePermissions.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativePermissions.xcodeproj; path = "../node_modules/react-native-permissions/ios/ReactNativePermissions.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -348,6 +358,7 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				E5C0E0CBE4F4440EBDA04421 /* libReactNativePermissions.a in Frameworks */,
+				D84BB8F04F684E88B52B3BFA /* libRNGestureHandler.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,6 +492,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		4739852F21EF34D400442B9A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4739853321EF34D400442B9A /* libRNGestureHandler.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		5E91572E1DD0AC6500FF2AA8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -494,6 +513,7 @@
 			isa = PBXGroup;
 			children = (
 				6D0B2257F9684C5D9E836F85 /* libReactNativePermissions.a */,
+				827477CC9E6F4F239FB654C6 /* libRNGestureHandler.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -531,6 +551,7 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				F76968552E474916877786CF /* ReactNativePermissions.xcodeproj */,
+				EAE91CDC921F4175967CDEFF /* RNGestureHandler.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -674,6 +695,10 @@
 				{
 					ProductGroup = 779F705B213830EC00782B83 /* Products */;
 					ProjectRef = F76968552E474916877786CF /* ReactNativePermissions.xcodeproj */;
+				},
+				{
+					ProductGroup = 4739852F21EF34D400442B9A /* Products */;
+					ProjectRef = EAE91CDC921F4175967CDEFF /* RNGestureHandler.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -908,6 +933,13 @@
 			remoteRef = 3DAD3EAE1DF850E9000B6D8A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		4739853321EF34D400442B9A /* libRNGestureHandler.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNGestureHandler.a;
+			remoteRef = 4739853221EF34D400442B9A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1023,11 +1055,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 				);
 				INFOPLIST_FILE = ChirpReactNative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/ChirpReactNative\"",
 					"\"$(SRCROOT)/ChirpReactNative\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1056,11 +1090,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
 				);
 				INFOPLIST_FILE = ChirpReactNative/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/ChirpReactNative\"",
 					"\"$(SRCROOT)/ChirpReactNative\"",
 				);
 				OTHER_LDFLAGS = (
