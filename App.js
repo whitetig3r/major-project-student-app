@@ -1,25 +1,7 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
 import React, { Component } from 'react';
 import Permissions from 'react-native-permissions';
 import {
-  Button,
+  TouchableOpacity,
   Platform,
   StyleSheet,
   Text,
@@ -33,8 +15,8 @@ import {
 const ChirpConnect = NativeModules.ChirpConnect;
 const ChirpConnectEmitter = new NativeEventEmitter(ChirpConnect);
 
-const key = 'CHIRP_APPLICATION_KEY';
-const secret = 'CHIRP_APPLICATION_SECRET';
+const key = 'FA3baAfbDBc9E2E9a8A352536';
+const secret = 'F90A1CEA4aEa6edc6cDAFE2FE0Dc2ffF94d4aB9B4bC0Dad338';
 
 export default class App extends Component<{}> {
 
@@ -61,11 +43,11 @@ export default class App extends Component<{}> {
         } else if (event.status === ChirpConnect.CHIRP_CONNECT_STATE_PAUSED) {
           this.setState({ status: 'Paused' });
         } else if (event.status === ChirpConnect.CHIRP_CONNECT_STATE_RUNNING) {
-          this.setState({ status: 'Running' });
+          this.setState({ status: 'Waiting for Link...' });
         } else if (event.status === ChirpConnect.CHIRP_CONNECT_STATE_SENDING) {
           this.setState({ status: 'Sending' });
         } else if (event.status === ChirpConnect.CHIRP_CONNECT_STATE_RECEIVING) {
-          this.setState({ status: 'Receiving' });
+          this.setState({ status: 'Receiving Link...' });
         }
       }
     );
@@ -73,8 +55,11 @@ export default class App extends Component<{}> {
     this.onReceived = ChirpConnectEmitter.addListener(
       'onReceived',
       (event) => {
+        console.log("EVENT");
         if (event.data.length) {
+          console.log(event.data);
           this.setState({ data: event.data });
+          setTimeout((() => { this.setState({ data: '----------' }) }), 5000);
         }
       }
     )
@@ -88,7 +73,7 @@ export default class App extends Component<{}> {
       await ChirpConnect.setConfigFromNetwork();
       ChirpConnect.start();
       this.setState({ initialised: true })
-    } catch(e) {
+    } catch (e) {
       console.warn(e.message);
     }
   }
@@ -107,7 +92,7 @@ export default class App extends Component<{}> {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to Chirp Connect!
+          Sound Shinobi
         </Text>
         <Text style={styles.instructions}>
           {this.state.status}
@@ -115,7 +100,9 @@ export default class App extends Component<{}> {
         <Text style={styles.instructions}>
           {this.state.data}
         </Text>
-      <Button onPress={this.onPress} title='SEND' disabled={!this.state.initialised} />
+        <TouchableOpacity onPress={this.onPress} style={styles.button} disabled={!this.state.initialised}>
+          <Text style={styles.buttonText}>SEND</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -126,17 +113,29 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#000',
   },
   welcome: {
     fontSize: 20,
+    fontFamily: "monospace",
+    color: 'white',
     textAlign: 'center',
-    margin: 60,
+    margin: 30,
   },
   instructions: {
     padding: 10,
     textAlign: 'center',
-    color: '#333333',
+    color: 'white',
     marginBottom: 5,
   },
+  button: {
+    padding: 10,
+    textAlign: 'center',
+    backgroundColor: 'green'
+  },
+  buttonText: {
+    letterSpacing: 2,
+    color: 'white',
+    fontFamily: 'monospace'
+  }
 });

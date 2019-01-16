@@ -67,13 +67,13 @@ RCT_EXPORT_METHOD(init:(NSString *)key secret:(NSString *)secret)
      [self sendEventWithName:@"onStateChanged" body:@{@"status": [NSNumber numberWithInt:newState]}];
    }];
 
-  [sdk setSendingBlock:^(NSData * _Nonnull data)
+  [sdk setSendingBlock:^(NSData * _Nonnull data, NSUInteger channel)
    {
      NSArray *payload = [self dataToArray: data];
      [self sendEventWithName:@"onSending" body:@{@"data": payload}];
    }];
 
-  [sdk setSentBlock:^(NSData * _Nonnull data)
+  [sdk setSentBlock:^(NSData * _Nonnull data, NSUInteger channel)
    {
      NSArray *payload = [self dataToArray: data];
      [self sendEventWithName:@"onSent" body:@{@"data": payload}];
