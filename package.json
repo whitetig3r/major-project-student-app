@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "ios": "open ios/ChirpReactNative.xcworkspace"
   },
   "dependencies": {
     "react": "16.4.1",
     "react-native": "0.56.0",
+    "react-native-firebase": "^5.2.1",
     "react-native-gesture-handler": "^1.0.12",
     "react-native-permissions": "^1.1.1",
     "react-navigation": "^3.0.9"

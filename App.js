@@ -29,6 +29,10 @@ export default class App extends Component<{}> {
     }
   }
 
+  validatePIN( receivedPIN ){
+    return true;
+  }
+
   async componentDidMount() {
     const response = await Permissions.check('microphone')
     if (response !== 'authorized') {
@@ -55,12 +59,25 @@ export default class App extends Component<{}> {
     this.onReceived = ChirpConnectEmitter.addListener(
       'onReceived',
       (event) => {
-        console.log("EVENT");
         if (event.data.length) {
-          console.log(event.data);
-          this.setState({ data: event.data });
-          this.props.navigation.navigate('Second', {pin:event.data});
-          setTimeout((() => { this.setState({ data: '----------' }) }), 5000);
+          // console.log(event.data);
+          // this.setState({ data: event.data });
+          // setTimeout((() => { this.setState({ data: '----------' }) }), 5000);
+          if(this.validatePIN(event.data)){
+            this.props.navigation.navigate('Second', { pin: event.data });
+          }
+          else {
+            this.setState({
+              ...this.state,
+              data:'ERROR: Invalid PIN'
+            });
+            setTimeout(() => {
+              this.setState({
+                ...this.state,
+                data:'Retrying...'
+              })
+            }, 5000);
+          }
         }
       }
     )
