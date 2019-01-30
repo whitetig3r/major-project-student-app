@@ -2,7 +2,7 @@
 
 import {AppRegistry} from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
-import Second from "./sample";
+import Second from "./SuccessScreen";
 import App from './App';
 
 import {name as appName} from './app.json';

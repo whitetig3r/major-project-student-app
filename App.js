@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component } from '../../../Library/Caches/typescript/2.9/node_modules/@types/react';
 import Permissions from 'react-native-permissions';
 import {
-  TouchableOpacity,
   Platform,
   StyleSheet,
   Text,
@@ -11,6 +10,7 @@ import {
   NativeEventEmitter,
   NativeModules
 } from 'react-native';
+import firebase from "react-native-firebase";
 
 const ChirpConnect = NativeModules.ChirpConnect;
 const ChirpConnectEmitter = new NativeEventEmitter(ChirpConnect);
@@ -33,6 +33,55 @@ export default class App extends Component<{}> {
     return true;
   }
 
+  async FBMarkAttendance ( ID ) {
+    const ref = firebase
+      .firestore()
+      .collection("courses")
+      .doc(ID[1]);
+
+    firebase
+      .firestore()
+      .runTransaction(async transaction => {
+        const doc = await transaction.get(ref);
+
+      
+        const studentIndex = doc.data().students.reduce( (reqIndex, student, currIndex, list) => {
+            if(student.register === ID[0]){
+              return reqIndex + currIndex;
+            }
+            return reqIndex+0;
+        },0)
+
+        const dateObjParam = new Date();
+
+        const dayIndex = Math.floor(((new Date(dateObjParam.getFullYear(), dateObjParam.getMonth(), dateObjParam.getDate()).getTime() - new Date(2019, 0, 29).getTime()) / (24 * 60 * 60 * 1000)));
+
+        const modifiedStudentList = doc.data().students.map( (student, index) => {
+            if(index === studentIndex){
+                const newStudent = student;
+                newStudent.present[dayIndex] = true;
+                return newStudent;
+            }
+            return student
+        })
+
+        transaction.update(ref, {
+            ...doc.data(),
+            students: modifiedStudentList
+        });
+
+        return modifiedStudentList;
+      })
+      .then(modifiedStudentList => {
+        console.log(
+          `Transaction successfully committed.`
+        );
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
   async componentDidMount() {
     const response = await Permissions.check('microphone')
     if (response !== 'authorized') {
@@ -48,8 +97,6 @@ export default class App extends Component<{}> {
           this.setState({ status: 'Paused' });
         } else if (event.status === ChirpConnect.CHIRP_CONNECT_STATE_RUNNING) {
           this.setState({ status: 'Waiting for Link...' });
-        } else if (event.status === ChirpConnect.CHIRP_CONNECT_STATE_SENDING) {
-          this.setState({ status: 'Sending' });
         } else if (event.status === ChirpConnect.CHIRP_CONNECT_STATE_RECEIVING) {
           this.setState({ status: 'Receiving Link...' });
         }
@@ -58,13 +105,12 @@ export default class App extends Component<{}> {
 
     this.onReceived = ChirpConnectEmitter.addListener(
       'onReceived',
-      (event) => {
+      async (event) => {
         if (event.data.length) {
-          // console.log(event.data);
-          // this.setState({ data: event.data });
-          // setTimeout((() => { this.setState({ data: '----------' }) }), 5000);
           if(this.validatePIN(event.data)){
-            this.props.navigation.navigate('Second', { pin: event.data });
+            const ID = ['RA1511008010136','IT303J_A']; // will get this from ID[0] from student and ID[1] from teacher
+            await this.FBMarkAttendance(ID);
+            this.props.navigation.navigate('Second');
           }
           else {
             this.setState({
@@ -102,10 +148,6 @@ export default class App extends Component<{}> {
     this.onError.remove();
   }
 
-  onPress() {
-    ChirpConnect.send([0, 1, 2, 3, 4]);
-  }
-
   render() {
     return (
       <View style={styles.container}>
@@ -118,9 +160,6 @@ export default class App extends Component<{}> {
         <Text style={styles.instructions}>
           {this.state.data}
         </Text>
-        <TouchableOpacity onPress={this.onPress} style={styles.button} disabled={!this.state.initialised}>
-          <Text style={styles.buttonText}>SEND</Text>
-        </TouchableOpacity>
       </View>
     );
   }
@@ -145,16 +184,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
     marginBottom: 5
-  },
-  button: {
-    padding: 10,
-    textAlign: "center",
-    backgroundColor: "green"
-  },
-  buttonText: {
-    letterSpacing: 2,
-    color: "white",
-    fontFamily: Platform.OS === "android" ? "monospace" : "American Typewriter"
   }
 });
 

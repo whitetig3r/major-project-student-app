@@ -58,3 +58,6 @@ buck-out/
 # Chirp
 ChirpConnect.framework
 chirp-connect-release.aar
+
+ios/
+android/
