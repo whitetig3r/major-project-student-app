@@ -15,8 +15,8 @@ import firebase from "react-native-firebase";
 const ChirpConnect = NativeModules.ChirpConnect;
 const ChirpConnectEmitter = new NativeEventEmitter(ChirpConnect);
 
-const key = 'FA3baAfbDBc9E2E9a8A352536';
-const secret = 'F90A1CEA4aEa6edc6cDAFE2FE0Dc2ffF94d4aB9B4bC0Dad338';
+const key = "YOUR_CHIRP_APPLICATION_KEY";
+const secret = "YOUR_CHIRP_APPLICATION_SECRET";
 
 export default class App extends Component<{}> {
 
